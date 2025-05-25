@@ -28,7 +28,7 @@ athena-interactive-solution/
 └── README.md                 # Este arquivo
 ```
 
-## Como Interagir com a Solução (Localmente)
+## Rodando Localmente (Sem Docker)
 
 Siga os passos abaixo para rodar o backend Flask e o frontend Streamlit em sua máquina local.
 
@@ -101,6 +101,52 @@ Siga os passos abaixo para rodar o backend Flask e o frontend Streamlit em sua m
     *   Opcionalmente, adicione mais lacunas manualmente no campo de texto.
     *   Clique em "Gerar Prompts de Estudo".
     *   Os prompts personalizados serão exibidos.
+
+## Rodando com Docker e Docker Compose (Recomendado para Facilidade)
+
+Se você tem Docker e Docker Compose instalados, você pode rodar ambos os serviços (backend e frontend) com um único comando. Esta é a maneira recomendada para simplificar a configuração e execução.
+
+**Pré-requisitos**:
+*   [Docker](https://docs.docker.com/get-docker/) instalado.
+*   [Docker Compose](https://docs.docker.com/compose/install/) instalado (geralmente vem com o Docker Desktop).
+
+**Passos para Execução**:
+
+1.  **Navegue até a raiz do projeto `athena-interactive-solution`**:
+    Certifique-se de que você está no diretório que contém o arquivo `docker-compose.yml`.
+    ```bash
+    cd caminho/para/seu/projeto/athena-interactive-solution
+    ```
+
+2.  **Construa e Inicie os Contêineres**:
+    Execute o seguinte comando no seu terminal:
+    ```bash
+    docker-compose up --build
+    ```
+    *   `--build`: Este flag garante que as imagens Docker sejam construídas (ou reconstruídas se houverem alterações nos Dockerfiles ou no código).
+    *   Este comando iniciará o backend Flask (acessível na porta 5000 do seu host) e o frontend Streamlit (acessível na porta 8501 do seu host).
+    *   Você verá os logs de ambos os serviços no seu terminal.
+
+3.  **Acesse a Aplicação**:
+    Após os contêineres serem construídos e iniciados (pode levar alguns momentos na primeira vez), abra seu navegador e acesse:
+    `http://localhost:8501`
+    Isto o levará para a interface do Streamlit.
+
+4.  **Interaja com a Aplicação**:
+    Use a interface como descrito na seção "Como Interagir com a Solução (Localmente)". O frontend se comunicará com o backend que está rodando no outro contêiner.
+
+5.  **Para Parar os Contêineres**:
+    No terminal onde você executou `docker-compose up`, pressione `Ctrl+C`.
+    Para garantir que os contêineres e redes sejam removidos (liberando as portas), você pode rodar:
+    ```bash
+    docker-compose down
+    ```
+    Isso para e remove os contêineres, redes e volumes definidos no `docker-compose.yml` (os volumes montados do seu código local não são afetados).
+
+**Vantagens de usar Docker Compose**:
+*   **Ambiente Consistente**: Garante que a aplicação rode da mesma forma, independentemente da sua configuração local de Python.
+*   **Gerenciamento Simplificado**: Um único comando para iniciar e parar todos os serviços.
+*   **Isolamento**: As dependências de cada serviço são isoladas dentro de seus respectivos contêineres.
 
 ## Modelo de IA e Simplificações no MVP
 

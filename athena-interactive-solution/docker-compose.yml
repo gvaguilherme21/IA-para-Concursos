@@ -1,0 +1,40 @@
+version: '3.8' # Specifies the Docker Compose file format version
+
+services:
+  backend:
+    build:
+      context: ./backend # Path to the backend Dockerfile and related files
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000" # Map host port 5000 to container port 5000 (Flask/Gunicorn)
+    volumes:
+      # Mounts the backend code directory into the container for live reloading.
+      # Useful during development. For production, you might remove this or handle it differently.
+      - ./backend:/app 
+    environment:
+      # Example: If you had environment variables for Flask settings
+      # - FLASK_ENV=development 
+      # - FLASK_DEBUG=1 
+      # For Gunicorn, PYTHONUNBUFFERED and PYTHONDONTWRITEBYTECODE are already in Dockerfile
+      PYTHONUNBUFFERED: 1 
+    restart: unless-stopped # Or 'always' or 'on-failure'
+
+  frontend:
+    build:
+      context: ./frontend # Path to the frontend Dockerfile and related files
+      dockerfile: Dockerfile
+    ports:
+      - "8501:8501" # Map host port 8501 to container port 8501 (Streamlit)
+    volumes:
+      # Mounts the frontend code directory into the container for live reloading.
+      - ./frontend:/app
+    depends_on:
+      - backend # Ensures backend starts before frontend (though Streamlit also handles connection retries)
+    environment:
+      # Streamlit specific environment variables can be set here if needed
+      # e.g., STREAMLIT_SERVER_MAX_UPLOAD_SIZE
+      PYTHONUNBUFFERED: 1
+    restart: unless-stopped
+
+# Networks and volumes can be defined globally here if needed,
+# but for this simple setup, Docker's default network is usually sufficient.
